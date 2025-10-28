@@ -1,97 +1,140 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# PozGPT 🤖  
+**An AI Chat App powered by DeepSeek Engine**  
+Developed by **Daniel Pozzoli**
 
-# Getting Started
+---
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## 📱 Overview  
+PozGPT is a cross-platform mobile chat application built with **React Native**.  
+It allows users to register, log in, and chat with an AI model powered by the **DeepSeek API** through a custom backend deployed on **Render**.  
+The app includes authentication with **Firebase**, dark mode, a custom sidebar navigation, and chat persistence.
 
-## Step 1: Start Metro
+The final APK release is available in the repository for direct installation and testing.
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+Chats are sent to a third-party AI via our hosted backend; only profile fields (name, gender, email) are stored in Firestore—no chat PII is persisted.
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+---
 
-```sh
-# Using npm
-npm start
+## ✨ Main Features  
+- Splash and welcome screen with animated branding  
+- User registration and authentication using **Firebase**  
+- Profile creation stored in **Firestore** (name, gender, email)  
+- Drawer navigation with a personalized greeting  
+- AI Chat screen with conversation bubbles and “New Chat” button  
+- Chat saving and highlighting of the active conversation  
+- UI Settings with dark mode toggle  
+- Account settings for changing password and email  
+- Logout function  
+- Backend hosted on **Render** to handle communication with the DeepSeek API  
 
-# OR using Yarn
-yarn start
+---
+
+## 🧠 AI Integration  
+PozGPT communicates with the **DeepSeek engine** through a Node.js backend.  
+All user messages are sent securely to the backend, which processes the request and returns the AI’s response.
+
+---
+
+## 🛠️ Technologies Used  
+- **React Native (CLI)**  
+- **Firebase Authentication & Firestore**  
+- **Node.js (Render backend)**  
+- **DeepSeek API**  
+- **React Navigation (Drawer + Stack)**  
+- **AsyncStorage**  
+- **Styled Components**  
+
+---
+
+## 📦 Installation Guide  
+
+### Option 1 — Install from APK  
+1. Download the latest `PozGPT-release.apk` file from this repository’s **Releases** section or root folder.  
+2. Transfer it to your Android device (via USB, email, or cloud).  
+3. Enable **Install from unknown sources** in your Android settings.  
+4. Open the file and install the app.  
+5. Launch **PozGPT** from your app drawer and start chatting! On first launch, the AI chat may take a few seconds to respond while the Render service wakes up.
+
+---
+
+### Option 2 — Run from Source  
+If you want to run or modify the project on your computer:
+
+#### Prerequisites  
+- Node.js (v16 or newer)  
+- React Native CLI  
+- Android Studio (or emulator setup)  
+- Firebase project and credentials  
+
+#### Steps  
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/PozGPT.git
+
+# Navigate into the folder
+cd PozGPT
+
+# Install dependencies
+npm install
+
+# Run on Android emulator or device
+npx react-native run-android
 ```
 
-## Step 2: Build and run your app
+No local backend is needed as long as `API_BASE_URL` points to the Render service. If you run a local server, update `API_BASE_URL` accordingly. 
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+---
 
-### Android
+## 🌐 Backend Setup
+1. Clone the backend folder (included in `/server`).
+2. Install dependencies:
+   
+    ```bash
+    npm install
+    ```
+3. Create a `.env` file with your DeepSeek API key and Firebase config.
+4. Deploy on **Render** or any Node-compatible hosting service.
 
-```sh
-# Using npm
-npm run android
+The app is preconfigured to use the hosted backend on Render via `API_BASE_URL`. **No local server is required** to run the APK or the source. To self-host, deploy the backend in `/server` and set `API_BASE_URL` to your service URL. Note: free Render plans may cold-start, so the first request can take a few seconds.
+   
+---   
 
-# OR using Yarn
-yarn android
-```
+## 🧩 Firebase Configuration
+Ensure that your Firebase project includes:
+- **Authentication** enabled (Email/Password).
+- **Firestore Database** with read/write access for authenticated users.
 
-### iOS
+---
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+## 🧑‍💻 Developer
+**Daniel Pozzoli**
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+BIT Student
 
-```sh
-bundle install
-```
+---
 
-Then, and every time you update your native dependencies, run:
+## 📥 Repository
+[https://github.com/Danypoz1986/MyAiChat-PozGpt-](https://github.com/Danypoz1986/MyAiChat-PozGpt-)
 
-```sh
-bundle exec pod install
-```
+The repository includes:
+- Complete React Native source code
+- Backend server code
+- `PozGPT-release.apk` ready to install
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+---
 
-```sh
-# Using npm
-npm run ios
+## 🖼️ Screenshots
 
-# OR using Yarn
-yarn ios
-```
+| Register | Register Success | Login |
+|-------|------|-----------|
+| ![Register](screenshots/register.png) | ![Register Success](screenshots/register%20success.png) | ![Login](screenshots/login.png) |
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+| AI Chat | Sidebar Menu | Dark Mode |
+|-----------|---------|---------------|   
+| ![AI Chat](screenshots/AI%20Chat.png) | ![Sidebar Menu](screenshots/Sidebar%20Menu.png) | ![Dark Mode](screenshots/Dark%20Mode.png) |
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+---
 
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+## ⚙️ License
+This project is released under the **MIT License**.
+You are free to clone, modify, and test the app for educational and non-commercial purposes.
