@@ -4,7 +4,26 @@ Developed by **Daniel Pozzoli**
 
 ---
 
-## 📱 Overview  
+## Table of Contents
+- [Table of Contents](#table-of-contents)
+- [Overview](#overview)
+- [Main Features](#main-features)
+- [AI Integration](#ai-integration)
+- [Technologies Used](#technologies-used)
+- [Installation Guide](#installation-guide)
+  - [Option 1 — Install from APK](#option-1--install-from-apk)
+  - [Option 2 — Run from Source](#option-2--run-from-source)
+- [Backend Setup](#backend-setup)
+- [Firebase Configuration](#firebase-configuration)
+- [Developer](#developer)
+- [Repository](#repository)
+- [Screenshots](#screenshots)
+- [License](#license)
+---
+
+---
+
+## Overview  
 PozGPT is a cross-platform mobile chat application built with **React Native**.  
 It allows users to register, log in, and chat with an AI model powered by the **DeepSeek API** through a custom backend deployed on **Render**.  
 The app includes authentication with **Firebase**, dark mode, a custom sidebar navigation, and chat persistence.
@@ -15,7 +34,7 @@ Chats are sent to a third-party AI via our hosted backend; only profile fields (
 
 ---
 
-## ✨ Main Features  
+## Main Features  
 - Splash and welcome screen with animated branding  
 - User registration and authentication using **Firebase**  
 - Profile creation stored in **Firestore** (name, gender, email)  
@@ -29,13 +48,13 @@ Chats are sent to a third-party AI via our hosted backend; only profile fields (
 
 ---
 
-## 🧠 AI Integration  
+## AI Integration  
 PozGPT communicates with the **DeepSeek engine** through a Node.js backend.  
 All user messages are sent securely to the backend, which processes the request and returns the AI’s response.
 
 ---
 
-## 🛠️ Technologies Used  
+## Technologies Used  
 - **React Native (CLI)**  
 - **Firebase Authentication & Firestore**  
 - **Node.js (Render backend)**  
@@ -46,7 +65,7 @@ All user messages are sent securely to the backend, which processes the request 
 
 ---
 
-## 📦 Installation Guide  
+## Installation Guide  
 
 ### Option 1 — Install from APK  
 1. Download the latest `PozGPT-release.apk` file from this repository’s **Releases** section or root folder.  
@@ -85,7 +104,7 @@ No local backend is needed as long as `API_BASE_URL` points to the Render servic
 
 ---
 
-## 🌐 Backend Setup
+## Backend Setup
 1. Clone the backend folder (included in `/server`).
 2. Install dependencies:
    
@@ -99,21 +118,21 @@ The app is preconfigured to use the hosted backend on Render via `API_BASE_URL`.
    
 ---   
 
-## 🧩 Firebase Configuration
+## Firebase Configuration
 Ensure that your Firebase project includes:
 - **Authentication** enabled (Email/Password).
 - **Firestore Database** with read/write access for authenticated users.
 
 ---
 
-## 🧑‍💻 Developer
+## Developer
 **Daniel Pozzoli**
 
 BIT Student
 
 ---
 
-## 📥 Repository
+## Repository
 [https://github.com/Danypoz1986/MyAiChat-PozGpt-](https://github.com/Danypoz1986/MyAiChat-PozGpt-)
 
 The repository includes:
@@ -123,7 +142,7 @@ The repository includes:
 
 ---
 
-## 🖼️ Screenshots
+## Screenshots
 
 | Register | Register Success | Login |
 |-------|------|-----------|
@@ -135,6 +154,6 @@ The repository includes:
 
 ---
 
-## ⚙️ License
+## License
 This project is released under the **MIT License**.
 You are free to clone, modify, and test the app for educational and non-commercial purposes.
