@@ -14,10 +14,10 @@ import FormInput from '../Components/FormInput';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { doc, deleteDoc, collection, getDocs, writeBatch, query, orderBy, startAfter, limit, updateDoc } from 'firebase/firestore';
+import { doc, deleteDoc, collection, getDocs, writeBatch, query, orderBy, startAfter, limit, updateDoc, getDoc } from 'firebase/firestore';
 import Loader from '../Components/Loader';
 import { auth, db } from '../../firebaseConfig';
-import { EmailAuthProvider, reauthenticateWithCredential, deleteUser, updateEmail, updatePassword, signOut } from 'firebase/auth';
+import { EmailAuthProvider, reauthenticateWithCredential, deleteUser, updateEmail, updatePassword, signOut, getAuth } from 'firebase/auth';
 import { useNavigation, CommonActions } from '@react-navigation/native';
 
 
@@ -31,8 +31,9 @@ export default function AccountSettings() {
   const [currentPassword, setCurrentPassword] = useState('');
   const [deleting, setDeleting] = useState(false);
   const navigation = useNavigation();
+  const isTestUser = getAuth().currentUser?.email === 'test@test.test'
   
-
+  
   async function deleteCollectionPaged(colRef, batchSize = 300) {
   let last = null;
   while (true) {
@@ -149,6 +150,9 @@ async function deleteAccountWithPassword(password) {
   return (
     <SafeAreaView style={[styles.screen, {backgroundColor: !darkMode ? lightColors.background : darkColors.background}]}>
       <Loader loading={loading} />
+
+      {!isTestUser ? (
+
       <ScrollView
           ref={scrollRef}
           keyboardShouldPersistTaps="handled"
@@ -168,6 +172,9 @@ async function deleteAccountWithPassword(password) {
 
           {/* Content */}
           {mode === 'email' ? <ChangeEmailForm /> : <ChangePasswordForm  />}
+
+        
+
           {!deleting ? (
           <TouchableOpacity style={[styles.btn, {backgroundColor: !darkMode ? lightColors.error : darkColors.error, marginTop:150, width:maxWidth}]}
             onPress={() => Alert.alert(
@@ -205,8 +212,16 @@ async function deleteAccountWithPassword(password) {
       </Text>
           </View>
           )}
+      
         </View>
       </ScrollView>
+      ):(<View>
+            <Text style={{ textAlign: 'center', 
+                              marginTop: 8, color: !darkMode ? lightColors.text : darkColors.text 
+                            }}>Password change and account deletion are disabled for the test user.
+            </Text>
+         </View>)
+    }
     </SafeAreaView>
   );
 }

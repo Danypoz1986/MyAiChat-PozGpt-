@@ -1,6 +1,6 @@
 // sendMessageToOpenSourceAI.js
 const sendMessageToOpenSourceAI = async (messages) => {
-  const r = await fetch('http://localhost:3001/chat', {
+  const r = await fetch('https://myaichat-pozgpt.onrender.com/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ messages }),

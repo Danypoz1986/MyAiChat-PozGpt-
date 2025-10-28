@@ -39,23 +39,12 @@ const CustomSidebarMenu = (props) => {
   const HIGHLIGHT_FG = onChatStack? (!darkMode ? lightColors.text : darkColors.border):(!darkMode? lightColors.headerBg : darkColors.textSecondary);
   const NORMAL_BG    = 'transparent';
   const NORMAL_FG    = !darkMode ? lightColors.headerBg  : darkColors.textSecondary;
-  const [profileOpen, setProfileOpen] = useState(false);
-  const [profilePos, setProfilePos] = useState({ x: 0, y: 0, w: 0, h: 0 });
   const [chatMenuOpen, setChatMenuOpen] = useState(false);
   const [chatAnchor, setChatAnchor] = useState(null);
   const [chatTarget, setChatTarget] = useState(null);
 
-  const openProfileMenu = () => {
-  avatarRef.current?.measureInWindow((x, y, w, h) => {
-    setProfilePos({ x, y, w, h });
-    setProfileOpen(true);
-  });
-};
-  const closeProfile = () => setProfileOpen(false);
-  const PROFILE_POPOVER_W = 200;
-  const profileLeft = Math.min(Math.max(profilePos.x, 8), screenW - PROFILE_POPOVER_W - 8);
-  const profileTop  = profilePos.y + profilePos.h + 8;
-
+  
+  
 
   const openMenu = () => {
     // measure avatar to anchor the popover
