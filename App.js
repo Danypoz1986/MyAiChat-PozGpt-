@@ -58,24 +58,15 @@ function App() {
     return () => sub.remove();
   }, []);
 
-  // Auth state
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, setUser);
-    return unsub;
-  }, []);
+
 
   return (
     <SafeAreaProvider>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          {/* Show splash while auth is loading */}
-          {user === undefined ? (
             <Stack.Screen name="SplashScreen" component={SplashScreen} />
-          ) : user ? (
             <Stack.Screen name="DrawerNavigationRoutes" component={DrawerNavigationRoutes} />
-          ) : (
             <Stack.Screen name="Auth" component={AuthStack} />
-          )}
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
