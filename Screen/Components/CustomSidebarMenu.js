@@ -88,7 +88,7 @@ useEffect(() => {
               reloading: false,
               lastOpenedAt: serverTimestamp(),
             }).catch((e) => console.log('updateDoc error:', e));
-          }, 300);
+          }, 800);
       } catch (e) {
         console.log(e);
       }
