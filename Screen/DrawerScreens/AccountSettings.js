@@ -215,11 +215,18 @@ async function deleteAccountWithPassword(password) {
       
         </View>
       </ScrollView>
-      ):(<View>
-            <Text style={{ textAlign: 'center', 
-                              marginTop: 8, color: !darkMode ? lightColors.text : darkColors.text 
-                            }}>Password change and account deletion are disabled for the test user.
+      ):(
+      
+        <View style={{flex: 1}}>
+            <View style={{flexDirection: 'column', alignItems:'center', marginBottom:30}}>
+              <Text style={[styles.text, {color: !darkMode ? lightColors.text : darkColors.textSecondary}]}>PozGPT</Text>
+              <Image source={require("../../image/logo.png")} style={{width:250, height:50}}/>
+          </View>
+          <View style={{ justifyContent:'center', alignItems:'center', marginVertical:'auto'}}>
+            <Text style={{color: !darkMode ? lightColors.text : darkColors.text }}>
+              Password change and account deletion are disabled for the test user.
             </Text>
+          </View>
          </View>)
     }
     </SafeAreaView>
