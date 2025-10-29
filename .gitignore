@@ -76,3 +76,20 @@ yarn-error.log
 
 #.env
 .env
+
+# Android
+android/.gradle/
+android/.idea/
+android/local.properties
+android/app/build/
+android/.cxx/
+android/app/release/*.apk
+android/app/*.keystore
+
+# iOS
+ios/Pods/
+ios/build/
+
+# General
+*.log
+node_modules/
