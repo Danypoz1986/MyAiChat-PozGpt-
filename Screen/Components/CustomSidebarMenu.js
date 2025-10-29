@@ -10,7 +10,7 @@ import {View,
         useWindowDimensions
       } from 'react-native';
 import { signOut, onAuthStateChanged } from "firebase/auth";
-import { collection, doc, getDoc, onSnapshot, orderBy, query, getDocs, writeBatch, deleteDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, onSnapshot, orderBy, query, getDocs, writeBatch, deleteDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from "../../firebaseConfig";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import updateDarkMode from './DarkMode'
@@ -42,6 +42,7 @@ const CustomSidebarMenu = (props) => {
   const [chatMenuOpen, setChatMenuOpen] = useState(false);
   const [chatAnchor, setChatAnchor] = useState(null);
   const [chatTarget, setChatTarget] = useState(null);
+  const [reloading, setReloading] = useState(false);
 
   
   
@@ -72,6 +73,29 @@ const closeChatMenu = () => {
   setChatAnchor(null);
   setChatTarget(null);
 };
+
+useEffect(() => {
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      if (!user)return;
+
+      try {
+        const userRef = doc(db, 'users', user.uid);
+        const snap = await getDoc(userRef);
+        setReloading(snap.exists() ? snap.data()?.reloading : false);
+        console.log('Reloading', reloading);
+        setTimeout(() => {
+            updateDoc(doc(db, 'users', user.uid), {
+              reloading: false,
+              lastOpenedAt: serverTimestamp(),
+            }).catch((e) => console.log('updateDoc error:', e));
+          }, 300);
+      } catch (e) {
+        console.log(e);
+      }
+    });
+    return unsub;
+  }, [reloading]);
+
 
 // Delete conversation (with messages)
 const deleteConversation = async (convoId) => {
@@ -425,14 +449,15 @@ const deleteConversation = async (convoId) => {
         Chats
       </Text>
 
-      {convos.map((c) => {
-        const selected = selectedId === c.id;
+      {convos.map((c, idx) => {
+        const selected = reloading ? idx===0 : selectedId === c.id;
         const isNewChat = (c.title || '').trim().toLowerCase() === 'new chat';
         return (
           <React.Fragment key={c.id}>
             <Pressable
             key={c.id}
             onPress={() => {
+              if(reloading )setReloading(false)
               setSelectedId(c.id);
               props.navigation.navigate('ChatScreenStack', {
                 screen: 'ChatScreen',
@@ -479,7 +504,7 @@ const deleteConversation = async (convoId) => {
                 color={selected ? HIGHLIGHT_FG : NORMAL_FG}
               />
             </TouchableOpacity>
-      )}
+          )}
         </Pressable>
 
 

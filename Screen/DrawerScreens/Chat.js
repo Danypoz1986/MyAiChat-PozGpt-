@@ -12,7 +12,7 @@ import {
 import { useRoute, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { auth, db } from '../../firebaseConfig';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import Loader from '../Components/Loader';
 import { darkColors, lightColors } from '../../theme';
@@ -56,6 +56,23 @@ const ChatScreen = () => {
   useEffect(() => {
     scrollRef.current?.scrollToEnd({ animated: true });
   }, [messages]);
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      if (!user) return;
+      
+      try {
+        await updateDoc(doc(db, 'users', user.uid), {
+              reloading: true,
+              lastOpenedAt: serverTimestamp(),
+      });
+
+      } catch (e) {
+        console.log('Init chat error:', e);
+      }
+    });
+    return unsub;
+  }, []);
 
   // Bootstrap on auth changes (once per auth session)
   useEffect(() => {

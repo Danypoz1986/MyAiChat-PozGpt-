@@ -1,4 +1,4 @@
-# PozGPT 🤖  
+# MyAiChat(PozGPT) 🤖  
 **An AI Chat App powered by DeepSeek Engine**  
 Developed by **Daniel Pozzoli**
 
@@ -19,7 +19,6 @@ Developed by **Daniel Pozzoli**
 - [Repository](#repository)
 - [Screenshots](#screenshots)
 - [License](#license)
----
 
 ---
 
@@ -31,6 +30,8 @@ The app includes authentication with **Firebase**, dark mode, a custom sidebar n
 The final APK release is available in the repository for direct installation and testing.
 
 Chats are sent to a third-party AI via our hosted backend; only profile fields (name, gender, email) are stored in Firestore—no chat PII is persisted.
+
+For quick testing you can register any email in the format `x@y.z` (fake emails work), or use test@test.test / 123456
 
 ---
 
@@ -78,6 +79,14 @@ All user messages are sent securely to the backend, which processes the request 
 
 ### Option 2 — Run from Source  
 If you want to run or modify the project on your computer:
+
+#### Test account (quick start)
+If you want to try the app immediately, either register a new account (any email that looks like `x@y.z` is accepted) or sign in with the test account:
+
+**Email:** `test@test.test`  
+**Password:** `123456`
+
+Note: the test account is provided for convenience. The test user cannot be modified or deleted from the app.
 
 #### Prerequisites  
 - Node.js (v16 or newer)  

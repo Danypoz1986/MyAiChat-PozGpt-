@@ -65,16 +65,7 @@ const LoginScreen = ({navigation}) => {
   } catch (e) {
     // Friendly errors
     console.log("Login error:", e.code, e.message);
-    let msg = "Login failed. Please try again.";
-    if (e.code === "auth/invalid-email") msg = "Invalid email address.";
-    if (e.code === "auth/user-disabled") msg = "This account is disabled.";
-    if (e.code === "auth/user-not-found") msg = "No account found with this email.";
-    if (e.code === "auth/wrong-password" || e.code === "auth/invalid-credential")
-      msg = "Incorrect email or password.";
-    if (e.code === "auth/network-request-failed")
-      msg = "Network error. Check your connection.";
-
-    setErrorMsg(msg);
+    setErrorMsg(e.code);
   } finally {
     setLoading(false);
   }
