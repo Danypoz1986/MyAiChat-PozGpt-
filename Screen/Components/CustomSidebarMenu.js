@@ -43,6 +43,7 @@ const CustomSidebarMenu = (props) => {
   const [chatAnchor, setChatAnchor] = useState(null);
   const [chatTarget, setChatTarget] = useState(null);
   const [reloading, setReloading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   
   
@@ -74,31 +75,31 @@ const closeChatMenu = () => {
   setChatTarget(null);
 };
 
-useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      if (!user)return;
 
-      try {
-        const userRef = doc(db, 'users', user.uid);
-        const snap = await getDoc(userRef);
-        setReloading(snap.exists() ? snap.data()?.reloading : false);
-        console.log('Reloading', reloading);
-        setTimeout(() => {
-            updateDoc(doc(db, 'users', user.uid), {
-              reloading: false,
-              lastOpenedAt: serverTimestamp(),
-            }).catch((e) => console.log('updateDoc error:', e));
-          }, 800);
-      } catch (e) {
-        console.log(e);
-      }
-    });
-    return unsub;
-  }, [reloading]);
+
+useEffect(() => {
+  const uid = auth.currentUser?.uid;
+  if (!uid) return;
+
+  const unsub = onSnapshot(doc(db, 'users', uid), (snap) => {
+    const data = snap.data() || {};
+    setReloading(Boolean(data.reloading));
+
+    // When not in reload mode, follow ChatScreen's truth
+    if (!data.reloading && data.currentConvoId) {
+      setSelectedId(data.currentConvoId);
+    }
+  }, (e) => console.log('users doc snapshot error:', e));
+
+  return unsub;
+}, []);
+
+
 
 
 // Delete conversation (with messages)
 const deleteConversation = async (convoId) => {
+  setDeleting(true);
   const uid = auth.currentUser?.uid;
   if (!uid) return;
 
@@ -140,6 +141,8 @@ const deleteConversation = async (convoId) => {
     return () => fetchName();
   }, []);
 
+
+
   useEffect(() => {
     const uid = auth.currentUser?.uid;
     if (!uid) return;
@@ -161,6 +164,9 @@ const deleteConversation = async (convoId) => {
     });
     return unsub;
   },[]);
+
+
+
   
 
  return (
@@ -453,22 +459,26 @@ const deleteConversation = async (convoId) => {
         const selected = reloading ? idx===0 : selectedId === c.id;
         const isNewChat = (c.title || '').trim().toLowerCase() === 'new chat';
         return (
-          <React.Fragment key={c.id}>
+          <React.Fragment>
             <Pressable
             key={c.id}
             onPress={() => {
-              if(reloading )setReloading(false)
-              setSelectedId(c.id);
-              props.navigation.navigate('ChatScreenStack', {
-                screen: 'ChatScreen',
-                params: { conId: c.id },
-              });
+              const targetId = reloading ? (convos[0]?.id ?? c.id) : c.id;
+                setSelectedId(targetId); // local snap
+                // optional: locally drop the reload highlight immediately
+                if (reloading) setReloading(false);
+
+                props.navigation.navigate('ChatScreenStack', {
+                  screen: 'ChatScreen',
+                  params: { conId: targetId },
+                });
             }}
             android_ripple={{ foreground: true }}
             style={({ pressed }) => [
               {
                 paddingVertical: 11,
                 marginHorizontal: 12,
+                height: 60,
                 paddingLeft: 3,
                 borderRadius: 16,
                 marginVertical: 6,
@@ -539,19 +549,49 @@ const deleteConversation = async (convoId) => {
               style: 'destructive',
               onPress: async () => {
                 closeChatMenu();
-                setConvos(prev => prev.filter(v => v.id !== chatTarget.id));
+                setDeleting(true)
+                const total = convos.length;
+                  const i = convos.findIndex(x => x.id === chatTarget.id);
+                  if (i === -1) return;                 // safety
+
+                  // Your rule: when deleting index 1, prefer going down (to higher index)
+                  const preferDown = i === 1;
+
+                  const prev = i > 1 ? convos[i - 1] : null;       // skip index 0
+                  const next = i + 1 < total ? convos[i + 1] : null;
+
+                  const neighbor = preferDown ? next : (prev ?? next);
+
+                  // optimistic remove
+                  setConvos(list => list.filter(item => item.id !== chatTarget.id));
+
+                  if (selectedId === chatTarget.id) {
+                    if (neighbor) {
+                      setSelectedId(neighbor.id);
+                      props.navigation.navigate('ChatScreenStack', {
+                        screen: 'ChatScreen',
+                        params: { conId: neighbor.id },
+                      });
+                    } else {
+                      // nothing valid to select (e.g., list was [0,1] and you deleted 1)
+                      setSelectedId(convos[0].id);
+                      props.navigation.navigate('ChatScreenStack', {
+                        screen: 'ChatScreen',
+                        params: { startNew: Date.now() },
+                      });
+                      // If you *do* want to fall back to index 0 instead, replace the block above
+                      // with selecting convos[0] when it exists and isn’t the deleted one.
+                    }
+                  }
+
                 try {
                   await deleteConversation(chatTarget.id);
-                  if (selectedId === chatTarget.id) {
-                    setSelectedId(null);
-                    props.navigation.navigate('ChatScreenStack', {
-                      screen: 'ChatScreen',
-                      params: { startNew: Date.now() },
-                    });
-                  }
                 } catch (e) {
                   console.log('Delete chat error:', e);
                   Alert.alert('Failed to delete chat', 'Please try again.');
+                } finally {
+                  setDeleting(false)
+                  console.log('Deleting: ',deleting)
                 }
               },
             },

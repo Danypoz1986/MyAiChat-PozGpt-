@@ -41,7 +41,7 @@ const ChatScreen = () => {
   const [convoId, setConvoId] = useState(null);
   const { width, height } = useWindowDimensions();
   const isLandscape = width>height;
-
+  const reloadTimerRef = useRef(null);
   
   const scrollRef = useRef(null);
 
@@ -57,22 +57,52 @@ const ChatScreen = () => {
     scrollRef.current?.scrollToEnd({ animated: true });
   }, [messages]);
 
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      if (!user) return;
-      
-      try {
-        await updateDoc(doc(db, 'users', user.uid), {
-              reloading: true,
-              lastOpenedAt: serverTimestamp(),
-      });
+  const flipReloading = useCallback(async () => {
+  const uid = auth.currentUser?.uid;
+  if (!uid) return;
 
-      } catch (e) {
-        console.log('Init chat error:', e);
-      }
+  if (reloadTimerRef.current) clearTimeout(reloadTimerRef.current);
+
+  try {
+    await updateDoc(doc(db, 'users', uid), {
+      reloading: true,
+      lastOpenedAt: serverTimestamp(),
     });
-    return unsub;
-  }, []);
+  } catch {}
+
+  reloadTimerRef.current = setTimeout(async () => {
+    try {
+      await updateDoc(doc(db, 'users', uid), {
+        reloading: false,
+        lastOpenedAt: serverTimestamp(),
+      });
+    } catch {}
+  }, 500);
+}, []);
+
+const setCurrentConvoOnUser = useCallback(async (id) => {
+  const uid = auth.currentUser?.uid;
+  if (!uid || !id) return;
+  try {
+    await updateDoc(doc(db, 'users', uid), {
+      currentConvoId: id,
+      lastOpenedAt: serverTimestamp(),
+    });
+  } catch (e) {
+    console.log('setCurrentConvoOnUser error:', e);
+  }
+}, []);
+
+
+useFocusEffect(
+  React.useCallback(() => {
+    flipReloading();
+    return () => {
+      if (reloadTimerRef.current) clearTimeout(reloadTimerRef.current);
+    };
+  }, [flipReloading])
+);
+
 
   // Bootstrap on auth changes (once per auth session)
   useEffect(() => {
@@ -93,6 +123,8 @@ const ChatScreen = () => {
         // ensure a conversation and load history
         const id = await ensureActiveConvo();
         setConvoId(id);
+        setCurrentConvoOnUser(id);       
+        flipReloading();
         const history = await fetchMessages(id);
         setMessages(history.map(({ role, content }) => ({ role, content })));
       } catch (e) {
@@ -110,7 +142,7 @@ const ChatScreen = () => {
 
       // if another run is in-flight, wait for it
       if (newChatInFlightRef.current) {
-        try { await newChatInFlightRef.current; } catch {}
+        try { newChatInFlightRef.current; } catch {}
       }
       if (isStartingNewRef.current) return;
       isStartingNewRef.current = true;
@@ -138,6 +170,9 @@ const ChatScreen = () => {
           if (id === convoId && !force) return;
 
           setConvoId(id);
+          setCurrentConvoOnUser(id);
+          flipReloading();          
+
           const history = await fetchMessages(id);
           setMessages(history.map(({ role, content }) => ({ role, content })));
           setInput('');
@@ -152,6 +187,7 @@ const ChatScreen = () => {
         isStartingNewRef.current = false;
       }
     },
+    
     [convoId]
   );
 
@@ -161,6 +197,7 @@ const ChatScreen = () => {
       const conId = route?.params?.conId;
       const uid = auth.currentUser?.uid;
       if (!uid || !conId) return;
+      flipReloading();
       await handleNewChat({ targetId: conId, force: true });
     })();
   }, [route?.params?.conId, handleNewChat]);
@@ -221,7 +258,7 @@ const ChatScreen = () => {
     useCallback(() => {
       const startNew = route?.params?.startNew;
       if (!startNew) return;
-
+      flipReloading();
       handleNewChat();
       navigation.setParams({ startNew: undefined });
     }, [route?.params?.startNew, navigation, handleNewChat])
