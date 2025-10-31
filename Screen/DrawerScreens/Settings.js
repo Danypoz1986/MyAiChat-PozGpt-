@@ -1,15 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, Text, Switch, StyleSheet, useWindowDimensions, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { lightColors, darkColors } from '../../theme';
 import { auth, db } from '../../firebaseConfig';
 import { setDoc, doc } from 'firebase/firestore';
 import updateDarkMode from '../Components/DarkMode'
+import { ScrollView } from 'react-native-gesture-handler';
 
 const SettingsScreen = () => {
   const {darkMode, setDarkMode} = updateDarkMode();
   const { width } = useWindowDimensions();
-  const maxWidth = Math.min(width -48, 520)
+  const maxWidth = Math.min(width -100, 520)
+  const scrollRef = useRef(null);
   
   
 
@@ -28,29 +30,35 @@ const SettingsScreen = () => {
 
   return (
     <SafeAreaView style={!darkMode ? styles.screen : [styles.screen,{backgroundColor:darkColors.background}]}>
-      
-      <View style={{flexDirection: 'column', alignItems:'center', marginBottom:30}}>
-          <Text style={[styles.text, {color: !darkMode ? lightColors.text : darkColors.textSecondary}]}>PozGPT</Text>
-          <Image source={require("../../image/logo.png")} style={{width:250, height:50}}/>
-      </View>
-      
-      {/* Toggles */}
-      <View style={!darkMode ? [styles.card, {width:maxWidth}] : [styles.card, {backgroundColor: darkColors.border, width: maxWidth}]}>
-        <View style={styles.row}>
-          <Text style={!darkMode ? styles.label : [styles.label, {color: darkColors.text}]}>Dark Mode</Text>
-          <Switch
-            style={{marginRight: -15}}
-            value={darkMode}
-            onValueChange={setDarkMode}
-            thumbColor={'#ffffff'}
-            trackColor={{ false: '#c9d1e1', true: lightColors.accent }}  
-          />
-        </View>
 
-        
-      </View>
-
+      <ScrollView
+          ref={scrollRef}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.listContent}
+      >
       
+          <View style={{flexDirection: 'column', alignItems:'center', marginBottom:30}}>
+              <Text style={[styles.text, {color: !darkMode ? lightColors.text : darkColors.textSecondary}]}>PozGPT</Text>
+              <Image source={require("../../image/logo.png")} style={{width:250, height:50}}/>
+          </View>
+          
+          {/* Toggles */}
+          <View style={!darkMode ? [styles.card, {width:maxWidth}] : [styles.card, {backgroundColor: darkColors.border, width: maxWidth}]}>
+            <View style={styles.row}>
+              <Text style={!darkMode ? styles.label : [styles.label, {color: darkColors.text}]}>Dark Mode</Text>
+              <Switch
+                style={{marginRight: -25}}
+                value={darkMode}
+                onValueChange={setDarkMode}
+                thumbColor={'#ffffff'}
+                trackColor={{ false: '#c9d1e1', true: lightColors.accent }}  
+              />
+            </View>
+
+            
+          </View>
+
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -88,8 +96,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: lightColors.text,
     fontWeight:  '600',
-    marginRight: 100,
-    marginLeft: -20
+    marginLeft: -25
   },
   supportBtn: {
     marginTop: 20,
@@ -116,7 +123,13 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     color: lightColors.text,
     fontWeight: 'bold'
+  },
+  listContent: {
+    paddingHorizontal: 12,
+    paddingTop: 12,
+    paddingBottom: 30,
   }
 });
+
 
 
