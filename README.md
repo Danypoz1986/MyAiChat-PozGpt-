@@ -9,16 +9,16 @@ Developed by **Daniel Pozzoli**
 - [🧭Overview](#overview)
 - [✨Main Features](#main-features)
 - [🧠AI Integration](#ai-integration)
-- [Technologies Used](#technologies-used)
-- [Installation Guide](#installation-guide)
-  - [Option 1 — Install from APK](#option-1--install-from-apk)
-  - [Option 2 — Run from Source](#option-2--run-from-source)
-- [Backend Setup](#backend-setup)
-- [Firebase Configuration](#firebase-configuration)
-- [Developer](#developer)
-- [Repository](#repository)
-- [Screenshots](#screenshots)
-- [License](#license)
+- [🛠️Technologies Used](#️technologies-used)
+- [⚙️Installation Guide](#️installation-guide)
+  - [📱Option 1 — Install from APK](#option-1--install-from-apk)
+  - [💻Option 2 — Run from Source](#option-2--run-from-source)
+- [🧩Backend Setup](#backend-setup)
+- [🔥Firebase Configuration](#firebase-configuration)
+- [👨‍💻Developer](#developer)
+- [🌐Repository](#repository)
+- [📸Screenshots](#screenshots)
+- [📜License](#license)
 
 ---
 
@@ -55,7 +55,7 @@ All user messages are sent securely to the backend, which processes the request 
 
 ---
 
-## Technologies Used  
+## 🛠️Technologies Used  
 - **React Native (CLI)**  
 - **Firebase Authentication & Firestore**  
 - **Node.js (Render backend)**  
@@ -66,9 +66,9 @@ All user messages are sent securely to the backend, which processes the request 
 
 ---
 
-## Installation Guide  
+## ⚙️Installation Guide  
 
-### Option 1 — Install from APK  
+### 📱Option 1 — Install from APK  
 1. Download the latest `PozGPT-release.apk` file from this repository’s **Releases** section or root folder.  
 2. Transfer it to your Android device (via USB, email, or cloud).  
 3. Enable **Install from unknown sources** in your Android settings.  
@@ -77,10 +77,10 @@ All user messages are sent securely to the backend, which processes the request 
 
 ---
 
-### Option 2 — Run from Source  
+### 💻Option 2 — Run from Source  
 If you want to run or modify the project on your computer:
 
-#### Test account (quick start)
+#### 🔐Test account (quick start)
 If you want to try the app immediately, either register a new account (any email that looks like `x@y.z` is accepted) or sign in with the test account:
 
 **Email:** `test@test.test`  
@@ -88,13 +88,13 @@ If you want to try the app immediately, either register a new account (any email
 
 Note: the test account is provided for convenience. The test user cannot be modified or deleted from the app.
 
-#### Prerequisites  
+#### 🧩Prerequisites  
 - Node.js (v16 or newer)  
 - React Native CLI  
 - Android Studio (or emulator setup)  
 - Firebase project and credentials  
 
-#### Steps  
+#### 🚀Steps  
 ```bash
 # Clone the repository
 git clone https://github.com/yourusername/PozGPT.git
@@ -113,7 +113,7 @@ No local backend is needed as long as `API_BASE_URL` points to the Render servic
 
 ---
 
-## Backend Setup
+## 🧩Backend Setup
 1. Clone the backend folder (included in `/server`).
 2. Install dependencies:
    
@@ -127,21 +127,21 @@ The app is preconfigured to use the hosted backend on Render via `API_BASE_URL`.
    
 ---   
 
-## Firebase Configuration
+## 🔥Firebase Configuration
 Ensure that your Firebase project includes:
 - **Authentication** enabled (Email/Password).
 - **Firestore Database** with read/write access for authenticated users.
 
 ---
 
-## Developer
+## 👨‍💻Developer
 **Daniel Pozzoli**
 
 BIT Student
 
 ---
 
-## Repository
+## 🌐Repository
 [https://github.com/Danypoz1986/MyAiChat-PozGpt-](https://github.com/Danypoz1986/MyAiChat-PozGpt-)
 
 The repository includes:
@@ -151,7 +151,7 @@ The repository includes:
 
 ---
 
-## Screenshots
+## 📸Screenshots
 
 | Register | Register Success | Login |
 |-------|------|-----------|
@@ -163,6 +163,6 @@ The repository includes:
 
 ---
 
-## License
+## 📜License
 This project is released under the **MIT License**.
 You are free to clone, modify, and test the app for educational and non-commercial purposes.
