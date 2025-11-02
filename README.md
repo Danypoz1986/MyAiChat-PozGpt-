@@ -4,11 +4,11 @@ Developed by **Daniel Pozzoli**
 
 ---
 
-## Table of Contents
-- [Table of Contents](#table-of-contents)
-- [Overview](#overview)
-- [Main Features](#main-features)
-- [AI Integration](#ai-integration)
+## 📑Table of Contents
+- [📑Table of Contents](#table-of-contents)
+- [🧭Overview](#overview)
+- [✨Main Features](#main-features)
+- [🧠AI Integration](#ai-integration)
 - [Technologies Used](#technologies-used)
 - [Installation Guide](#installation-guide)
   - [Option 1 — Install from APK](#option-1--install-from-apk)
@@ -22,7 +22,7 @@ Developed by **Daniel Pozzoli**
 
 ---
 
-## Overview  
+## 🧭Overview  
 PozGPT is a cross-platform mobile chat application built with **React Native**.  
 It allows users to register, log in, and chat with an AI model powered by the **DeepSeek API** through a custom backend deployed on **Render**.  
 The app includes authentication with **Firebase**, dark mode, a custom sidebar navigation, and chat persistence.
@@ -35,7 +35,7 @@ For quick testing you can register any email in the format `x@y.z` (fake emails 
 
 ---
 
-## Main Features  
+## ✨Main Features  
 - Splash and welcome screen with animated branding  
 - User registration and authentication using **Firebase**  
 - Profile creation stored in **Firestore** (name, gender, email)  
@@ -49,7 +49,7 @@ For quick testing you can register any email in the format `x@y.z` (fake emails 
 
 ---
 
-## AI Integration  
+## 🧠AI Integration  
 PozGPT communicates with the **DeepSeek engine** through a Node.js backend.  
 All user messages are sent securely to the backend, which processes the request and returns the AI’s response.
 
