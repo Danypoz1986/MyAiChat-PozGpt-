@@ -8,13 +8,14 @@ import {
   TouchableOpacity,
   useWindowDimensions,
   Image,
+  Modal,
+  Animated
 } from 'react-native';
 import { useRoute, useNavigation, useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { auth, db } from '../../firebaseConfig';
 import { doc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
-import Loader from '../Components/Loader';
 import { darkColors, lightColors } from '../../theme';
 import sendMessageToOpenSourceAI from '../../sendMessageToOpenSourceAI';
 import {
@@ -27,12 +28,11 @@ import {
 import updateDarkMode from '../Components/DarkMode'
 
 
-
 const ChatScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { darkMode } = updateDarkMode();
-
+  const boxBg = darkMode ? darkColors.textSecondary : lightColors.text;
   const [gender, setGender] = useState(null);
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]); // [{role, content}]
@@ -105,7 +105,7 @@ useFocusEffect(
 
 
   // Bootstrap on auth changes (once per auth session)
-  useEffect(() => {
+ useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       if (!user) {
         setGender(null);
@@ -120,19 +120,14 @@ useFocusEffect(
         const snap = await getDoc(userRef);
         setGender(snap.exists() ? snap.data()?.gender ?? null : null);
 
-        // ensure a conversation and load history
-        const id = await ensureActiveConvo();
-        setConvoId(id);
-        setCurrentConvoOnUser(id);       
-        flipReloading();
-        const history = await fetchMessages(id);
-        setMessages(history.map(({ role, content }) => ({ role, content })));
+        // use the same "start new chat if needed" logic used elsewhere
+        await handleNewChat({ force: false });
       } catch (e) {
         console.log('Init chat error:', e);
       }
     });
     return unsub;
-  }, []);
+  }, [handleNewChat]);
 
 
   // Idempotent & single-flight "start/switch chat"
@@ -281,6 +276,45 @@ useFocusEffect(
     }, [handleNewChat])
   );
 
+  const TypingDots = () => {
+  const dot1 = useRef(new Animated.Value(0)).current;
+  const dot2 = useRef(new Animated.Value(0)).current;
+  const dot3 = useRef(new Animated.Value(0)).current;
+
+  const animateDot = (dot, delay) => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(dot, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+          delay,
+        }),
+        Animated.timing(dot, {
+          toValue: 0,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  };
+
+  useEffect(() => {
+    animateDot(dot1, 0);
+    animateDot(dot2, 150);
+    animateDot(dot3, 300);
+  }, []);
+
+  return (
+    <View style={styles.dotsContainer}>
+      <Animated.Text style={[styles.dot, { opacity: dot1, color: !darkMode ? lightColors.headerBg : darkColors.surface }]}>•</Animated.Text>
+      <Animated.Text style={[styles.dot, { opacity: dot2, color: !darkMode ? lightColors.headerBg : darkColors.surface }]}>•</Animated.Text>
+      <Animated.Text style={[styles.dot, { opacity: dot3, color: !darkMode ? lightColors.headerBg : darkColors.surface }]}>•</Animated.Text>
+    </View>
+  );
+};
+  
+
   return (
     <SafeAreaView style={styles.safe}>
       <View style={!darkMode ? styles.page : [styles.page, {backgroundColor : darkColors.background }]}>
@@ -365,7 +399,28 @@ useFocusEffect(
           </TouchableOpacity>
         </View>
 
-        <Loader loading={loading} />
+        <View>
+            <Modal transparent animationType="none" visible={loading}>
+                  <View
+                    style={[
+                      styles.modalBackground
+                    ]}
+                  >
+                    <View
+                      style={[
+                        styles.activityIndicatorWrapper,
+                        { backgroundColor: boxBg, color: !darkMode ? lightColors.headerBg : darkColors.surface },
+                      ]}
+                    >
+                      <Text style={[styles.loaderText,{color: !darkMode ? lightColors.headerBg : darkColors.surface}]}>Answering</Text>
+                      <View style={styles.dotsContainer}>
+                        <TypingDots />  
+                      </View>
+                    </View>
+                  </View>
+                </Modal>
+        </View>
+
       </View>
     </SafeAreaView>
   );
@@ -493,4 +548,33 @@ const styles = StyleSheet.create({
   watermarkStack: {
     alignItems: 'center',
   },
+  modalBackground: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activityIndicatorWrapper: {
+    height: 50,
+    width: 200,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row'
+  },
+
+  loaderText:{
+    fontSize: 20,
+    fontweight: 'bold'
+  },
+  
+  dotsContainer: {
+  flexDirection: 'row',
+  marginTop: 8,
+},
+
+dot: {
+  fontSize: 22,
+  marginHorizontal: 2,
+}
+
 });
